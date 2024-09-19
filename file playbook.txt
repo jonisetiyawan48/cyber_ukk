@@ -2,6 +2,14 @@
 - name: Install LAMP stack and configure MySQL
   hosts: webservers
   become: yes
+  vars:
+    mysql_root_password: "19091996Jss"
+    mysql_user: "cyber"
+    mysql_user_password: "pass2023"
+    db_name: "cyber23"
+    git_repo: "https://github.com/jonisetiyawan48/cyber_ukk.git"
+    web_root: "/var/www/html"
+
   tasks:
     - name: Install Apache, MariaDB, and PHP
       apt:
@@ -13,6 +21,11 @@
           - php-mbstring
         state: present
         update_cache: yes
+
+    - name: Install Python MySQL library
+      apt:
+        name: python3-pymysql
+        state: present
 
     - name: Start and enable Apache
       service:
@@ -32,28 +45,56 @@
         state: started
         timeout: 30
 
-    - name: Create MySQL database
+#    - name: Set MariaDB root password
+#      mysql_user:
+#        name: root
+#        host: localhost
+#        password: "{{ mysql_root_password }}"
+#        state: present
+
+    - name: Create .my.cnf file for root
+      copy:
+        dest: /root/.my.cnf
+        content: |
+          [client]
+          user=root
+          password={{ mysql_root_password }}
+        mode: '0600'
+
+    - name: Create MySQL database and user
       mysql_db:
-        name: cyber23
+        name: "{{ db_name }}"
         state: present
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
 
     - name: Create MySQL user
       mysql_user:
-        name: cyber
-        password: pass2023
+        name: "{{ mysql_user }}"
+        password: "{{ mysql_user_password }}"
         host: localhost
         priv: "*.*:ALL"
         state: present
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
 
-    - name: Flush MySQL privileges
-      mysql_privs:
-        user: cyber
-        host: localhost
-        priv: "*.*:ALL"
-        state: present
+    - name: Check if web root directory exists
+      stat:
+        path: "{{ web_root }}"
+      register: web_root_stat
+
+    - name: Ensure web root directory is empty
+      command: rm -rf {{ web_root }}/*
+      when: web_root_stat.stat.exists and web_root_stat.stat.isdir
+
+    - name: Clone Git repository if not present
+      git:
+        repo: "{{ git_repo }}"
+        dest: "{{ web_root }}/"
+        update: yes
 
     - name: Import SQL file into database
       mysql_db:
-        name: cyber23
+        name: "{{ db_name }}"
         state: import
-        target: /path/to/cyber.sql
+        target: "{{ web_root }}/db.sql"
