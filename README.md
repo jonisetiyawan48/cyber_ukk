@@ -1,5 +1,5 @@
 #file ansible 
-file playbook.txt
+playbook.txt
 
 #Instalasi package
 
