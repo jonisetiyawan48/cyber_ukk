@@ -20,14 +20,5 @@ GRANT ALL PRIVILEGES ON *.* TO 'cyber'@'localhost' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
 
 
-#Config Koneksi di file koneksi.php
-
-$host = "localhost";
-
-$user = "cyber";
-
-$pass = "pass2023";
-
-$db   = "cyber23";
 
 
