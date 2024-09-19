@@ -1,3 +1,6 @@
+#file ansible 
+file playbook.txt
+
 #Instalasi package
 
 apt install apache2
