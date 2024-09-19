@@ -1,9 +1,9 @@
 <?php
 
 $host = "localhost";
-$user = "blog";
-$pass = "blog";
-$db   = "blog";
+$user = "cyber";
+$pass = "pass2023";
+$db   = "cyber23";
 
 $conn = mysqli_connect($host, $user, $pass);
 mysqli_select_db($conn, $db);
