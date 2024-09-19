@@ -26,6 +26,12 @@
         state: started
         enabled: yes
 
+    - name: Wait for MariaDB to start
+      wait_for:
+        port: 3306
+        state: started
+        timeout: 30
+
     - name: Create MySQL database
       mysql_db:
         name: cyber23
@@ -45,3 +51,9 @@
         host: localhost
         priv: "*.*:ALL"
         state: present
+
+    - name: Import SQL file into database
+      mysql_db:
+        name: cyber23
+        state: import
+        target: /path/to/cyber.sql
