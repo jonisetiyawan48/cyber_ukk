@@ -3,7 +3,7 @@
   hosts: webservers
   become: yes
   vars:
-    mysql_root_password: "19091996Jss"
+    mysql_root_password: "1909cyberUkk"
     mysql_user: "cyber"
     mysql_user_password: "pass2023"
     db_name: "cyber23"
